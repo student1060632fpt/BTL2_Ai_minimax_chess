@@ -35,7 +35,7 @@ You can instantly run the demo:
     ```
 - Run demo
     ```
-    python3 main.py
+    python main.py
     ```
   
 
