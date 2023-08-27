@@ -1,31 +1,31 @@
-from Board import DisplayBoard
+from ChessBoard import BoardDisplay
 from MiniMax import minimax
 from Evaluation import Evalualtion
 import chess
 import pygame as py
 
 # General variables
-MAX, MIN = 100000, -100000
-depth = 4
+MAX_INPUT, MIN_INPUT = 100000, -100000
+depth_tree = 4
 
-board = chess.Board()
-display = DisplayBoard(board)
+chess_board = chess.Board()
+board_display = BoardDisplay(chess_board)
 
 # Tis function can be run at anytime and wit completely reset the game.
-def setup_game():
-    board.reset_board()
-    display.main_menu()
-    display.update(board)
-    run()
+def game_setup():
+    chess_board.reset_board()
+    board_display.main_menu()
+    board_display.update(chess_board)
+    run_game()
 
 def move():
-    player_possible_move = display.square_select(py.mouse.get_pos())
+    player_possible_move = board_display.square_select(py.mouse.get_pos())
     if player_possible_move != None:
         try:
-            eval = Evalualtion(board, display.player_color)
+            eval = Evalualtion(chess_board, board_display.player_color)
             is_late_game = eval.is_late_game()
 
-            if display.player_color == "W":
+            if board_display.player_color == "W":
                 makeMoveWhite(player_possible_move, is_late_game)
                 makeMoveBlack(player_possible_move, is_late_game)
             else:
@@ -36,45 +36,45 @@ def move():
 
 def makeMoveWhite(move, is_late_game):
 
-    if display.player_color == "W":
-        board.push_uci(move)
+    if board_display.player_color == "W":
+        chess_board.push_uci(move)
     else:
-        # The depth attribute has to be odd
+        # The depth_tree attribute has to be odd
         if is_late_game:
-            white = minimax(depth + 1, True, MIN, MAX, board, True)
+            white = minimax(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
         else:
-            white = minimax(depth + 1, True, MIN, MAX, board, True)
+            white = minimax(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
 
-        board.push(white)
+        chess_board.push(white)
 
-    display.update(board)
+    board_display.update(chess_board)
 
 def makeMoveBlack(move, is_late_game):
 
-    if display.player_color == "B":
-        board.push_uci(move)
+    if board_display.player_color == "B":
+        chess_board.push_uci(move)
     else:
-        # The depth attribute has to be even
+        # The depth_tree attribute has to be even
         if is_late_game:
-            black = minimax(depth + 2, False, MIN, MAX, board, True)
+            black = minimax(depth_tree + 2, False, MIN_INPUT, MAX_INPUT, chess_board, True)
         else:
-            black = minimax(depth, False, MIN, MAX, board, True)
-        board.push(black)
+            black = minimax(depth_tree, False, MIN_INPUT, MAX_INPUT, chess_board, True)
+        chess_board.push(black)
 
-    display.update(board)
+    board_display.update(chess_board)
 
-def is_game_over(board):
-    if board.is_game_over():
-        display.run = False
-        display.game_over = True
-        display.game_over_menu()
+def is_game_over(chess_board):
+    if chess_board.is_game_over():
+        board_display.is_run = False
+        board_display.fail = True
+        board_display.game_over_menu()
 
-def run():
+def run_game():
 
-    if display.player_color == "B":
+    if board_display.player_color == "B":
         makeMoveWhite(None, False)
 
-    while display.run:
+    while board_display.is_run:
         events = py.event.get()
         for event in events:
             if event.type == py.QUIT:
@@ -83,13 +83,13 @@ def run():
             if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
                 move()
             elif event.type == py.MOUSEBUTTONDOWN and event.button == 3:
-                display.remove_square_select()
+                board_display.remove_square_select()
 
-        display.update_screen()
-        is_game_over(board)
+        board_display.update_screen()
+        is_game_over(chess_board)
 
 while run:
-    setup_game()
+    game_setup()
 
 py.quit()
 
