@@ -20,6 +20,20 @@ class BoardDisplay():
         self.board_state = _board
         self.fen_notation = _board.fen()
 
+        # Input text variables
+        self.input_box = py.Rect(160, 460, 200, 32)
+        self.color_inactive = py.Color('lightskyblue3')
+        self.color_active = py.Color('dodgerblue2')
+        self.color = self.color_inactive
+        self.active = False
+        self.text = ''
+        self.font = py.font.init()
+        self.font = py.font.Font(None, 32)
+        self.elo_text = self.font.render("elo", True, (0, 0, 0))
+        self.elo_val = None
+
+
+
         # Tổng hợp pygame ban đầu
 
         py.init()
@@ -159,7 +173,7 @@ class BoardDisplay():
 
 
 ############################################################################################################################
-# From here is only UI stuff to display menus and buttons ect.
+# From here is only UI stuff to display menus and click_buttons ect.
 
     def menu_main(self):
 
@@ -174,16 +188,43 @@ class BoardDisplay():
                 # print(_event)
                 if _event.type == py.QUIT:
                     py.quit()
-
+                if _event.type == py.MOUSEBUTTONDOWN:
+                    if self.input_box.collidepoint(_event.pos):
+                        self.active = not self.active
+                    else:
+                        self.active = False
+                    self.color = self.color_active if self.active else self.color_inactive
+                if _event.type == py.KEYDOWN:
+                    if self.active:
+                        if _event.key == py.K_RETURN:
+                            # Do something with the input text here
+                            self.elo_val = int(self.text)
+                            # print(self.text)
+                            self.text = ''
+                        elif _event.key == py.K_BACKSPACE:
+                            self.text = self.text[:-1]
+                        else:
+                            self.text += _event.unicode
+                            
+                            
             self.window.fill((255,255,255))
             hello_text = py.font.SysFont("comicsansms", 100)
-            text_surf, text_rect = self.text_objects("Play Chess", hello_text)
+            text_surf, text_rect = self.text_obj("Play Chess", hello_text)
             text_rect.center = ((self.dimension / 2), (self.dimension / 2 - 100))
             self.window.blit(text_surf, text_rect)
 
-            self.button("White", 50, 300, 100, 50, color_for_white, color_for_black, 1)
-            self.button("Black", 350, 300, 100, 50, color_for_black, color_for_white, 2)
-            self.button("Quit", 225, 400, 80, 50, red, background_red, 3)
+
+            self.window.blit(self.elo_text, (self.input_box.x - self.elo_text.get_width() - 10, self.input_box.y + 5))
+            txt_surface = self.font.render(self.text, True, self.color)
+            width = max(200, txt_surface.get_width()+10)
+            self.input_box.w = width
+            self.window.blit(txt_surface, (self.input_box.x+5, self.input_box.y+5))
+            py.draw.rect(self.window, self.color, self.input_box, 2)
+
+
+            self.click_button("White", 50, 300, 100, 50, color_for_white, color_for_black, 1)
+            self.click_button("Black", 350, 300, 100, 50, color_for_black, color_for_white, 2)
+            self.click_button("Quit", 225, 400, 80, 50, red, background_red, 3)
 
             py.display.update()
             self.time.tick(15)
@@ -205,28 +246,28 @@ class BoardDisplay():
             self.window.fill((255,255,255,100))
             largeText = py.font.SysFont("comicsansms", 90)
             mediumText = py.font.SysFont("comicsansms", 50)
-            TextSurfMian, TextRectMain = self.text_objects("Game Over", largeText)
+            TextSurfMian, TextRectMain = self.text_obj("Game Over", largeText)
             TextRectMain.center = ((self.dimension / 2), (self.dimension / 2 - 120))
             self.window.blit(TextSurfMian, TextRectMain)
 
             if self.board_state.turn == chess.WHITE:
-                TextSurf, TextRect = self.text_objects("Black Won", mediumText)
+                TextSurf, TextRect = self.text_obj("Black Won", mediumText)
             else:
-                TextSurf, TextRect = self.text_objects("White Won", mediumText)
+                TextSurf, TextRect = self.text_obj("White Won", mediumText)
 
             TextRect.center = ((self.dimension / 2), (self.dimension / 2) - 20)
             self.window.blit(TextSurf, TextRect)
 
-            self.button("Play Again", 225, 300, 100, 50, green, background_green, 4)
-            self.button("Quit", 225, 400, 100, 50, red, background_red, 3)
+            self.click_button("Play Again", 225, 300, 100, 50, green, background_green, 4)
+            self.click_button("Quit", 225, 400, 100, 50, red, background_red, 3)
 
             py.display.update()
             self.time.tick(15)
 
-    def button(self, msg, x, y, w, h, ic, ac, action=None):
-        mouse = py.mouse.get_pos()
+    def click_button(self, message, x, y, w, h, ic, ac, action=None):
+        mouse_event = py.mouse.get_pos()
         click = py.mouse.get_pressed()
-        if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        if x + w > mouse_event[0] > x and y + h > mouse_event[1] > y:
             py.draw.rect(self.window, ac, (x, y, w, h))
 
             if click[0] == 1 and action != None:
@@ -251,13 +292,13 @@ class BoardDisplay():
             py.draw.rect(self.window, ic, (x, y, w, h))
 
         smallText = py.font.SysFont("comicsansms", 20)
-        textSurf, textRect = self.text_objects(msg, smallText)
-        textRect.center = ((x + (w / 2)), (y + (h / 2)))
-        self.window.blit(textSurf, textRect)
+        text_surf, text_rect = self.text_obj(message, smallText)
+        text_rect.center = ((x + (w / 2)), (y + (h / 2)))
+        self.window.blit(text_surf, text_rect)
 
-    def text_objects(self, text, font):
-        textSurface = font.render(text, True, (0,0,0))
-        return textSurface, textSurface.get_rect()
+    def text_obj(self, text, font):
+        text_surface = font.render(text, True, (0,0,0))
+        return text_surface, text_surface.get_rect()
 
 # This class is used to create Pieces and assign a Surface and Image to them
 class Piece():
