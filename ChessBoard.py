@@ -29,8 +29,8 @@ class BoardDisplay():
         self.chessBoard = py.image.load("Image/Board.png").convert_alpha()
         self.chessBoard = py.transform.scale(self.chessBoard, (self.dimension, self.dimension))
 
-        self.show_moves_surf = py.Surface((50, 50), py.SRCALPHA, 32)
-        py.draw.circle(self.show_moves_surf, (0, 200, 0, 100), (25, 25), 20, 0)
+        self.display_moves_surf = py.Surface((50, 50), py.SRCALPHA, 32)
+        py.draw.circle(self.display_moves_surf, (0, 200, 0, 100), (25, 25), 20, 0)
 
         self.board_layout_init()
 
@@ -89,7 +89,7 @@ class BoardDisplay():
         # Hiển thị các vòng tròn hiển thị các bước di chuyển có thể
         if self.display_eligal_move != []:
             for num in self.display_eligal_move:
-                self.window.blit(self.show_moves_surf, (num[0], num[1]))
+                self.window.blit(self.display_moves_surf, (num[0], num[1]))
 
         py.display.update()
         self.time.tick(10)
@@ -106,19 +106,19 @@ class BoardDisplay():
     def pieceData(self, piece):
 
         # This class gets referenced when initializing new Pieces using Pieces class
-        if piece == 'p': return Piece("Pawn", "B")
-        elif piece == 'r': return Piece("Rook", "B")
-        elif piece == 'n': return Piece("Knight", "B")
-        elif piece == 'b': return Piece("Bishop", "B")
+        if piece == 'p': return Piece("Pawn_piece", "B")
+        elif piece == 'r': return Piece("Rook_piece", "B")
+        elif piece == 'n': return Piece("Knight_piece", "B")
+        elif piece == 'b': return Piece("Bishop_piece", "B")
         elif piece == 'k': return Piece("King", "B")
-        elif piece == 'q': return Piece("Queen", "B")
+        elif piece == 'q': return Piece("Queen_piece", "B")
 
-        elif piece == 'P': return Piece("Pawn", "W")
-        elif piece == 'R': return Piece("Rook", "W")
-        elif piece == 'N': return Piece("Knight", "W")
-        elif piece == 'B': return Piece("Bishop", "W")
+        elif piece == 'P': return Piece("Pawn_piece", "W")
+        elif piece == 'R': return Piece("Rook_piece", "W")
+        elif piece == 'N': return Piece("Knight_piece", "W")
+        elif piece == 'B': return Piece("Bishop_piece", "W")
         elif piece == 'K': return Piece("King", "W")
-        elif piece == 'Q': return Piece("Queen", "W")
+        elif piece == 'Q': return Piece("Queen_piece", "W")
 
 
     # If the player Left Click on block the piece on that block is the one to be moved.
@@ -193,8 +193,8 @@ class BoardDisplay():
         red = (200, 0, 0)
         green = (0, 200, 0)
 
-        bright_red = (255, 0, 0)
-        bright_green = (0, 255, 0)
+        background_red = (255, 0, 0)
+        background_green = (0, 255, 0)
 
         while self.fail:
             for event in py.event.get():
@@ -217,8 +217,8 @@ class BoardDisplay():
             TextRect.center = ((self.dimension / 2), (self.dimension / 2) - 20)
             self.window.blit(TextSurf, TextRect)
 
-            self.button("Play Again", 225, 300, 100, 50, green, bright_green, 4)
-            self.button("Quit", 225, 400, 100, 50, red, bright_red, 3)
+            self.button("Play Again", 225, 300, 100, 50, green, background_green, 4)
+            self.button("Quit", 225, 400, 100, 50, red, background_red, 3)
 
             py.display.update()
             self.time.tick(15)
@@ -268,12 +268,12 @@ class Piece():
         self.dimension = 45
 
         if (self.color == "W") or (self.color == "White"):
-            if self.name != "Knight":
+            if self.name != "Knight_piece":
                 self.pieceSurface = py.image.load("Image/Chess_"+self.name.lower()[0]+"lt60.png")
             else:
                 self.pieceSurface = py.image.load("Image/Chess_nlt60.png")
         else:
-            if self.name != "Knight":
+            if self.name != "Knight_piece":
                 self.pieceSurface = py.image.load("Image/Chess_" + self.name.lower()[0] + "dt60.png")
             else:
                 self.pieceSurface = py.image.load("Image/Chess_ndt60.png")

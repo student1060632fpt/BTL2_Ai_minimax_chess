@@ -76,35 +76,35 @@ class Evalualtion():
         for piece_val in self.layout_board:
             if piece_val != None:
                 if str(piece_val) == "P":
-                    total_point += self.values_board.Pawn[-(num_counter-63)]
+                    total_point += self.values_board.Pawn_piece[-(num_counter-63)]
                 elif str(piece_val) == "N":
-                    total_point += self.values_board.Knight[-(num_counter-63)]
+                    total_point += self.values_board.Knight_piece[-(num_counter-63)]
                     number_of_minor_pieces_white += 1
                 elif str(piece_val) == "B":
-                    total_point += self.values_board.Bishop[-(num_counter-63)]
+                    total_point += self.values_board.Bishop_piece[-(num_counter-63)]
                     number_of_minor_pieces_white += 1
                 elif str(piece_val) == "R":
-                    total_point += self.values_board.Rook[-(num_counter-63)]
+                    total_point += self.values_board.Rook_piece[-(num_counter-63)]
                     number_of_minor_pieces_white += 1
                 elif str(piece_val) == "Q":
-                    total_point += self.values_board.Queen[-(num_counter-63)]
+                    total_point += self.values_board.Queen_piece[-(num_counter-63)]
                     number_of_minor_pieces_white += 1
 
                 #######################################################################
 
                 elif str(piece_val) == "p":
-                    total_point -= self.values_board.Pawn[num_counter]
+                    total_point -= self.values_board.Pawn_piece[num_counter]
                 elif str(piece_val) == "n":
-                    total_point += self.values_board.Knight[num_counter]
+                    total_point += self.values_board.Knight_piece[num_counter]
                     number_of_minor_pieces_black += 1
                 elif str(piece_val) == "b":
-                    total_point += self.values_board.Bishop[num_counter]
+                    total_point += self.values_board.Bishop_piece[num_counter]
                     number_of_minor_pieces_black += 1
                 elif str(piece_val) == "r":
-                    total_point += self.values_board.Rook[num_counter]
+                    total_point += self.values_board.Rook_piece[num_counter]
                     number_of_minor_pieces_black += 1
                 elif str(piece_val) == "q":
-                    total_point += self.values_board.Queen[num_counter]
+                    total_point += self.values_board.Queen_piece[num_counter]
                     number_of_minor_pieces_black += 1
 
             num_counter += 1
@@ -115,18 +115,18 @@ class Evalualtion():
                 # Nếu đúng thì đó vẫn là trò chơi đầu.
                 if str(piece_val) == "k":
                     if (number_of_minor_pieces_black >= 3):
-                        total_point += self.values_board.KingEarly[num_counter]
+                        total_point += self.values_board.King_early[num_counter]
                     else:
-                        total_point += self.values_board.KingLate[num_counter]
+                        total_point += self.values_board.King_late[num_counter]
                         self.late_game_black = True
                         print("Black Late")
 
                 # Nếu đúng thì đó vẫn là trò chơi đầu.
                 elif str(piece_val) == "K":
                     if (number_of_minor_pieces_white >= 3):
-                        total_point += self.values_board.KingEarly[-(num_counter - 63)]
+                        total_point += self.values_board.King_early[-(num_counter - 63)]
                     else:
-                        total_point += self.values_board.KingLate[-(num_counter - 63)]
+                        total_point += self.values_board.King_late[-(num_counter - 63)]
                         self.late_game_white = True
 
             num_counter += 1

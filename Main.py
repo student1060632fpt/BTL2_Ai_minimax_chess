@@ -1,5 +1,5 @@
 from ChessBoard import BoardDisplay
-from MiniMax import minimax
+from MiniMax import minimax_algorithm
 from Evaluation import Evalualtion
 import chess
 import pygame as py
@@ -27,9 +27,9 @@ def move():
 
             if board_display.color_player == "W":
                 make_white_move(player_possible_move, is_late_game)
-                makeMoveBlack(player_possible_move, is_late_game)
+                make_move_black(player_possible_move, is_late_game)
             else:
-                makeMoveBlack(player_possible_move, is_late_game)
+                make_move_black(player_possible_move, is_late_game)
                 make_white_move(player_possible_move, is_late_game)
         except:
             print("Invalid Move")
@@ -41,24 +41,24 @@ def make_white_move(move, state_is_late_game):
     else:
         # Thuộc tính deep_tree phải là số lẻ
         if state_is_late_game:
-            white = minimax(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
+            white = minimax_algorithm(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
         else:
-            white = minimax(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
+            white = minimax_algorithm(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
 
         chess_board.push(white)
 
     board_display.setup_update(chess_board)
 
-def makeMoveBlack(move, state_is_late_game):
+def make_move_black(move, state_is_late_game):
 
     if board_display.color_player == "B":
         chess_board.push_uci(move)
     else:
         # The depth_tree attribute has to be even
         if state_is_late_game:
-            black = minimax(depth_tree + 2, False, MIN_INPUT, MAX_INPUT, chess_board, True)
+            black = minimax_algorithm(depth_tree + 2, False, MIN_INPUT, MAX_INPUT, chess_board, True)
         else:
-            black = minimax(depth_tree, False, MIN_INPUT, MAX_INPUT, chess_board, True)
+            black = minimax_algorithm(depth_tree, False, MIN_INPUT, MAX_INPUT, chess_board, True)
         chess_board.push(black)
 
     board_display.setup_update(chess_board)
@@ -76,13 +76,13 @@ def run_game():
 
     while board_display.is_run:
         events = py.event.get()
-        for event in events:
-            if event.type == py.QUIT:
+        for event_mouse in events:
+            if event_mouse.type == py.QUIT:
                 exit()
 
-            if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
+            if event_mouse.type == py.MOUSEBUTTONDOWN and event_mouse.button == 1:
                 move()
-            elif event.type == py.MOUSEBUTTONDOWN and event.button == 3:
+            elif event_mouse.type == py.MOUSEBUTTONDOWN and event_mouse.button == 3:
                 board_display.remove_square_select()
 
         board_display.function_update_screen()
