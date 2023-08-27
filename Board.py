@@ -20,6 +20,21 @@ class DisplayBoard():
         self.board = board
         self.fen = board.fen()
 
+
+        # Input text variables
+        self.input_box = py.Rect(160, 460, 200, 32)
+        self.color_inactive = py.Color('lightskyblue3')
+        self.color_active = py.Color('dodgerblue2')
+        self.color = self.color_inactive
+        self.active = False
+        self.text = ''
+        self.font = py.font.init()
+        self.font = py.font.Font(None, 32)
+        self.elo_text = self.font.render("elo", True, (0, 0, 0))
+        self.elo_val = None
+
+
+
         # General pygame Init
 
         py.init()
@@ -174,12 +189,37 @@ class DisplayBoard():
                 # print(event)
                 if event.type == py.QUIT:
                     py.quit()
+                if event.type == py.MOUSEBUTTONDOWN:
+                    if self.input_box.collidepoint(event.pos):
+                        self.active = not self.active
+                    else:
+                        self.active = False
+                    self.color = self.color_active if self.active else self.color_inactive
+                if event.type == py.KEYDOWN:
+                    if self.active:
+                        if event.key == py.K_RETURN:
+                            # Do something with the input text here
+                            self.elo_val = int(self.text)
+                            # print(self.text)
+                            self.text = ''
+                        elif event.key == py.K_BACKSPACE:
+                            self.text = self.text[:-1]
+                        else:
+                            self.text += event.unicode
 
             self.win.fill((255,255,255))
             largeText = py.font.SysFont("comicsansms", 115)
             TextSurf, TextRect = self.text_objects("Chess", largeText)
             TextRect.center = ((self.dim / 2), (self.dim / 2 - 100))
             self.win.blit(TextSurf, TextRect)
+
+
+            self.win.blit(self.elo_text, (self.input_box.x - self.elo_text.get_width() - 10, self.input_box.y + 5))
+            txt_surface = self.font.render(self.text, True, self.color)
+            width = max(200, txt_surface.get_width()+10)
+            self.input_box.w = width
+            self.win.blit(txt_surface, (self.input_box.x+5, self.input_box.y+5))
+            py.draw.rect(self.win, self.color, self.input_box, 2)
 
             self.button("WHITE", 50, 300, 100, 50, green, bright_green, 1)
             self.button("BLACK", 350, 300, 100, 50, green, bright_green, 2)

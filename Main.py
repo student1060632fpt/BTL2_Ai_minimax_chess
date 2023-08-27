@@ -3,6 +3,7 @@ from MiniMax import minimax
 from Evaluation import Evalualtion
 import chess
 import pygame as py
+from CalElo import CalElo
 
 # General variables
 MAX, MIN = 100000, -100000
@@ -65,6 +66,32 @@ def makeMoveBlack(move, is_late_game):
 
 def is_game_over(board):
     if board.is_game_over():
+        if board.turn == chess.WHITE:
+            if display.player_color == "W":
+                d = 2
+            else:
+                d = 1
+        else: #den thang
+            if display.player_color == "W":
+                d = 1
+            else:
+                d = 2
+        # else:
+        #     d = 2
+        with open('elo.txt', 'r') as file:
+            bot = file.read()
+            bot = int(bot)  # Đọc nội dung của tệp và lưu vào biến content
+        print(bot)
+        gess = display.elo_val
+        print(gess)
+
+        elo_new = CalElo(bot,gess,30,d)
+        elo_new.EloRating()
+
+        with open("elo.txt", "w") as file:
+            file.write(str(int(round(elo_new.Ra))))
+        print ("ok")
+
         display.run = False
         display.game_over = True
         display.game_over_menu()
