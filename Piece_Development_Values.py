@@ -1,5 +1,5 @@
-class BoardValues:
-
+class ValuesBoard:
+  
     def __init__(self):
         self.Pawn = [0,  0,   0,   0,   0,   0,  0, 0,
                      5, 10,  10, -20, -20,  10, 10, 5,

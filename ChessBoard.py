@@ -80,13 +80,13 @@ class BoardDisplay():
 
 
     def function_update_screen(self):
-        # This function updates the screen should be run every time a change is made to the board state
+        # Chức năng này cập nhật màn hình sẽ được chạy mỗi khi có thay đổi về trạng thái bảng
         self.window.blit(self.chessBoard, (0, 0))
-        # Display all pieces in BoardLayout
+        # Hiển thị tất cả các phần trong BoardLayout
         for num in self.board_layout:
             if self.board_layout[num] != None:
                 self.window.blit(self.board_layout[num].render(), (self.board_position[num][0], self.board_position[num][1]))
-        # Displays circles that show possible moves
+        # Hiển thị các vòng tròn hiển thị các bước di chuyển có thể
         if self.display_eligal_move != []:
             for num in self.display_eligal_move:
                 self.window.blit(self.show_moves_surf, (num[0], num[1]))
@@ -161,29 +161,29 @@ class BoardDisplay():
 ############################################################################################################################
 # From here is only UI stuff to display menus and buttons ect.
 
-    def main_menu(self):
+    def menu_main(self):
 
         red = (200, 0, 0)
-        green = (0, 200, 0)
+        color_for_white = (210,220,230)
+        color_for_black = (80,130,170)
 
-        bright_red = (255, 0, 0)
-        bright_green = (0, 255, 0)
+        background_red = (255, 0, 0)
 
         while self.introduce:
-            for event in py.event.get():
-                # print(event)
-                if event.type == py.QUIT:
+            for _event in py.event.get():
+                # print(_event)
+                if _event.type == py.QUIT:
                     py.quit()
 
             self.window.fill((255,255,255))
-            largeText = py.font.SysFont("comicsansms", 115)
-            TextSurf, TextRect = self.text_objects("Chess", largeText)
-            TextRect.center = ((self.dimension / 2), (self.dimension / 2 - 100))
-            self.window.blit(TextSurf, TextRect)
+            hello_text = py.font.SysFont("comicsansms", 100)
+            text_surf, text_rect = self.text_objects("Play Chess", hello_text)
+            text_rect.center = ((self.dimension / 2), (self.dimension / 2 - 100))
+            self.window.blit(text_surf, text_rect)
 
-            self.button("WHITE", 50, 300, 100, 50, green, bright_green, 1)
-            self.button("BLACK", 350, 300, 100, 50, green, bright_green, 2)
-            self.button("Quit", 225, 400, 80, 50, red, bright_red, 3)
+            self.button("White", 50, 300, 100, 50, color_for_white, color_for_black, 1)
+            self.button("Black", 350, 300, 100, 50, color_for_black, color_for_white, 2)
+            self.button("Quit", 225, 400, 80, 50, red, background_red, 3)
 
             py.display.update()
             self.time.tick(15)

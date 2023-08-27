@@ -4,17 +4,17 @@ from Evaluation import Evalualtion
 import chess
 import pygame as py
 
-# General variables
+# Biến chung
 MAX_INPUT, MIN_INPUT = 100000, -100000
 depth_tree = 4
 
 chess_board = chess.Board()
 board_display = BoardDisplay(chess_board)
 
-# Tis function can be run at anytime and wit completely reset the game.
-def game_setup():
+# Chức năng này có thể được chạy bất cứ lúc nào và có thể thiết lập lại hoàn toàn trò chơi.
+def setup_game():
     chess_board.reset_board()
-    board_display.main_menu()
+    board_display.menu_main()
     board_display.setup_update(chess_board)
     run_game()
 
@@ -26,21 +26,21 @@ def move():
             is_late_game = eval.is_late_game()
 
             if board_display.color_player == "W":
-                makeMoveWhite(player_possible_move, is_late_game)
+                make_white_move(player_possible_move, is_late_game)
                 makeMoveBlack(player_possible_move, is_late_game)
             else:
                 makeMoveBlack(player_possible_move, is_late_game)
-                makeMoveWhite(player_possible_move, is_late_game)
+                make_white_move(player_possible_move, is_late_game)
         except:
             print("Invalid Move")
 
-def makeMoveWhite(move, is_late_game):
+def make_white_move(move, state_is_late_game):
 
     if board_display.color_player == "W":
         chess_board.push_uci(move)
     else:
-        # The depth_tree attribute has to be odd
-        if is_late_game:
+        # Thuộc tính deep_tree phải là số lẻ
+        if state_is_late_game:
             white = minimax(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
         else:
             white = minimax(depth_tree + 1, True, MIN_INPUT, MAX_INPUT, chess_board, True)
@@ -49,13 +49,13 @@ def makeMoveWhite(move, is_late_game):
 
     board_display.setup_update(chess_board)
 
-def makeMoveBlack(move, is_late_game):
+def makeMoveBlack(move, state_is_late_game):
 
     if board_display.color_player == "B":
         chess_board.push_uci(move)
     else:
         # The depth_tree attribute has to be even
-        if is_late_game:
+        if state_is_late_game:
             black = minimax(depth_tree + 2, False, MIN_INPUT, MAX_INPUT, chess_board, True)
         else:
             black = minimax(depth_tree, False, MIN_INPUT, MAX_INPUT, chess_board, True)
@@ -72,7 +72,7 @@ def is_game_over(chess_board):
 def run_game():
 
     if board_display.color_player == "B":
-        makeMoveWhite(None, False)
+        make_white_move(None, False)
 
     while board_display.is_run:
         events = py.event.get()
@@ -89,7 +89,7 @@ def run_game():
         is_game_over(chess_board)
 
 while run_game:
-    game_setup()
+    setup_game()
 
 py.quit()
 
