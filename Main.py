@@ -15,17 +15,17 @@ board_display = BoardDisplay(chess_board)
 def game_setup():
     chess_board.reset_board()
     board_display.main_menu()
-    board_display.update(chess_board)
+    board_display.setup_update(chess_board)
     run_game()
 
 def move():
     player_possible_move = board_display.square_select(py.mouse.get_pos())
     if player_possible_move != None:
         try:
-            eval = Evalualtion(chess_board, board_display.player_color)
+            eval = Evalualtion(chess_board, board_display.color_player)
             is_late_game = eval.is_late_game()
 
-            if board_display.player_color == "W":
+            if board_display.color_player == "W":
                 makeMoveWhite(player_possible_move, is_late_game)
                 makeMoveBlack(player_possible_move, is_late_game)
             else:
@@ -36,7 +36,7 @@ def move():
 
 def makeMoveWhite(move, is_late_game):
 
-    if board_display.player_color == "W":
+    if board_display.color_player == "W":
         chess_board.push_uci(move)
     else:
         # The depth_tree attribute has to be odd
@@ -47,11 +47,11 @@ def makeMoveWhite(move, is_late_game):
 
         chess_board.push(white)
 
-    board_display.update(chess_board)
+    board_display.setup_update(chess_board)
 
 def makeMoveBlack(move, is_late_game):
 
-    if board_display.player_color == "B":
+    if board_display.color_player == "B":
         chess_board.push_uci(move)
     else:
         # The depth_tree attribute has to be even
@@ -61,7 +61,7 @@ def makeMoveBlack(move, is_late_game):
             black = minimax(depth_tree, False, MIN_INPUT, MAX_INPUT, chess_board, True)
         chess_board.push(black)
 
-    board_display.update(chess_board)
+    board_display.setup_update(chess_board)
 
 def is_game_over(chess_board):
     if chess_board.is_game_over():
@@ -71,7 +71,7 @@ def is_game_over(chess_board):
 
 def run_game():
 
-    if board_display.player_color == "B":
+    if board_display.color_player == "B":
         makeMoveWhite(None, False)
 
     while board_display.is_run:
@@ -85,10 +85,10 @@ def run_game():
             elif event.type == py.MOUSEBUTTONDOWN and event.button == 3:
                 board_display.remove_square_select()
 
-        board_display.update_screen()
+        board_display.function_update_screen()
         is_game_over(chess_board)
 
-while run:
+while run_game:
     game_setup()
 
 py.quit()
